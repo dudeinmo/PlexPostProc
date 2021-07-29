@@ -37,14 +37,16 @@
 #******************************************************************************
 
 TMPFOLDER="/tmp"
-ENCODER="ffmpeg"  # Encoder to use:
+ENCODER="handbrake"  # Encoder to use:
                   # "ffmpeg" for FFMPEG [DEFAULT]
                   # "handbrake" for HandBrake
                   # "nvtrans" for Plex Transcoder with NVENC support
 RES="720"         # Resolution to convert to:
                   # "720" = 720 Vertical Resolution
                   # "1080" = 1080 Vertical Resolution
-
+QUALITY="16"      # default = 20, min = 0, max = 51
+		  # DVD recommended between 18 - 20
+		  # Bluray recommended between 19 - 21
 #******************************************************************************
 #  Do not edit below this line
 #******************************************************************************
@@ -89,7 +91,7 @@ if [ ! -z "$1" ]; then
    echo "$(date +"%Y%m%d-%H%M%S"): Starting transcode of $FILENAME to $TEMPFILENAME" | tee -a $LOGFILE
    if [[ $ENCODER == "handbrake" ]]; then
      echo "You have selected HandBrake" | tee -a $LOGFILE
-     HandBrakeCLI -i "$FILENAME" -f mkv --aencoder copy -e qsv_h264 --x264-preset veryfast --x264-profile auto -q 16 --maxHeight $RES --decomb bob -o "$TEMPFILENAME"
+     HandBrakeCLI -i "$FILENAME" -f mkv --aencoder copy -e qsv_h264 --x264-preset veryfast --x264-profile auto -q $QUALITY --maxHeight $RES --decomb bob -o "$TEMPFILENAME"
      check_errs $? "Failed to convert using Handbrake."
    elif [[ $ENCODER == "ffmpeg" ]]; then
      echo "You have selected FFMPEG" | tee -a $LOGFILE
